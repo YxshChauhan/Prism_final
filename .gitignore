@@ -1,0 +1,97 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# AirLink Audit and Test Artifacts
+# Audit results and reports
+audit_results/
+audit_reports/
+device_logs/
+*.audit
+*.benchmark
+
+# Generated test files (keep structure, ignore content)
+test_files/generated/*
+!test_files/generated/.gitkeep
+test_files/small/
+test_files/medium/
+test_files/large/
+test_files/special/
+
+# Temporary test files
+*.tmp
+*.temp
+test_file_*.txt
+test_file_*.bin
+test_file_*.dat
+
+# Checksum and verification files
+*.sha256
+*.md5
+*.checksum
+
+# Performance and benchmark data
+benchmark_*.json
+performance_*.csv
+metrics_*.log
+
+# Security audit files
+security_audit_*.json
+cert_validation_*.log
+
+# Device-specific logs
+android_logs_*/
+ios_logs_*/
+device_info_*.json
+
+# Coverage reports (detailed)
+coverage/html/
+coverage/lcov/
+coverage/*.info
+
+# Profiling data
+profile_*.json
+memory_*.heap
+cpu_*.prof

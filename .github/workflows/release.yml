@@ -1,0 +1,134 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-release
+          path: build/app/outputs/
+      - uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  ios-release:
+    name: iOS Release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ios-release
+          path: build/ios/iphoneos/
+
+  desktop-release:
+    name: Desktop Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build linux --release
+      - run: flutter build macos --release
+      - run: flutter build windows --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: desktop-release-${{ matrix.os }}
+          path: build/
+
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter pub audit
+      - run: flutter test test/core/security/
+      - run: flutter test test/security/
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test --coverage
+      - run: genhtml coverage/lcov.info -o coverage/html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/html
+
+  performance-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test test/performance/
+      - run: flutter test test/benchmarks/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: performance-report
+          path: test/performance/reports/
+
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter pub global activate dartdoc
+      - run: dartdoc
+      - uses: actions/upload-artifact@v3
+        with:
+          name: documentation
+          path: doc/api/

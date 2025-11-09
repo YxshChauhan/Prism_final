@@ -1,0 +1,8 @@
+{
+    "cmake.sourceDirectory": "D:/Yash Files/AirLink_4-copy-2-/linux",
+    "kiroAgent.configureMCP": "Disabled",
+    "dart.showTodos": false,
+    "files.associations": {
+        "variant": "cpp"
+    }
+}

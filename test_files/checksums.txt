@@ -1,0 +1,32 @@
+# SHA-256 Checksums for AirLink Test Files
+# Generated: $(date)
+# Format: <checksum> <filepath>
+
+# Small Files (< 1MB)
+# These checksums will be generated when files are created
+# text_1kb.txt: TBD
+# text_10kb.txt: TBD
+# image_100kb.jpg: TBD
+# document_500kb.pdf: TBD
+
+# Medium Files (1MB - 100MB)
+# image_5mb.png: TBD
+# audio_10mb.mp3: TBD
+# video_25mb.mp4: TBD
+# archive_50mb.zip: TBD
+
+# Large Files (100MB - 1GB)
+# video_200mb.mov: TBD
+# archive_500mb.tar.gz: TBD
+# dataset_1gb.bin: TBD
+
+# Special Cases
+# empty_file.txt: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+# unicode_名前.txt: TBD
+# spaces in name.doc: TBD
+# very_long_filename_that_exceeds_normal_limits_and_tests_filesystem_boundaries.txt: TBD
+# corrupted_file.jpg: TBD
+
+# Usage:
+# To verify checksums: sha256sum -c checksums.txt
+# To update checksums: find . -type f -not -name "checksums.txt" -not -name "README.md" -exec sha256sum {} \; > checksums.txt

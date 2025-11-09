@@ -1,0 +1,113 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter pub audit
+      - run: dart pub global activate security_scanner
+      - run: security_scanner
+      - run: flutter test test/core/security/
+      - run: flutter test test/security/
+
+  dependency-check:
+    name: Dependency Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter pub deps
+      - run: flutter pub outdated
+      - run: dart pub global activate dependency_validator
+      - run: dependency_validator
+
+  code-scan:
+    name: Code Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter analyze --fatal-infos
+      - run: dart pub global activate dart_code_metrics
+      - run: metrics analyze lib/
+      - run: metrics check-unused-code lib/
+      - run: metrics check-unused-files lib/
+
+  crypto-test:
+    name: Cryptographic Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test test/core/security/crypto_test.dart
+      - run: flutter test test/core/security/key_manager_test.dart
+      - run: flutter test test/core/security/secure_session_test.dart
+
+  protocol-test:
+    name: Protocol Security Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test test/core/protocol/
+      - run: flutter test test/unit/core/protocol/
+
+  integration-security:
+    name: Integration Security Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test integration_test/
+      - run: flutter test test/integration/
+
+  vulnerability-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter pub audit
+      - run: dart pub global activate security_scanner
+      - run: security_scanner --vulnerability-check
+      - run: dart pub global activate dependency_validator
+      - run: dependency_validator --check-vulnerabilities
